@@ -1,9 +1,10 @@
 import subprocess
 import base64
-import cv2
-import sys
-from typing import Optional
-
+# import cv2
+# import sys
+# from typing import Optional
+from rich import print
+import requests
 from mcp.server.fastmcp import FastMCP
 
 mcp = FastMCP("My App")
@@ -36,43 +37,63 @@ def plusTwoNums(first: int, second: int) -> int:
     return first + second + 5
 
 @mcp.tool()
-def take_webcam_screenshot() -> Optional[str]:
+def test_rich_print() -> str:
     """
-    Take a screenshot from the webcam and return it as a base64 encoded string.
-   
-    Args:
-        device_id: The camera device ID (default is 0 for the primary webcam)
-   
-    Returns:
-        Base64 encoded string of the image or None if capture fails
+    A simple test function using the rich library for colored output
+    """
+    # Demonstrate rich's formatting capabilities
+    print("[bold red]This is a test function[/bold red]")
+    return "Test function executed successfully"
+
+@mcp.tool()
+def test_http_request() -> str:
+    """
+    A test function that makes a simple HTTP request
     """
     try:
-        # Initialize the webcam
-        cap = cv2.VideoCapture(0)
-       
-        if not cap.isOpened():
-            return None
-           
-        # Capture a single frame
-        ret, frame = cap.read()
-       
-        # Release the webcam
-        cap.release()
-       
-        if not ret:
-            return None
-           
-        # Convert the image to JPEG format
-        _, buffer = cv2.imencode('.jpg', frame)
-       
-        # Convert to base64 string
-        image_base64 = base64.b64encode(buffer).decode('utf-8')
-       
-        return image_base64
-       
+        response = requests.get('https://httpbin.org/get')
+        return f"Request successful. Status code: {response.status_code}"
     except Exception as e:
-        print(f"Error capturing image: {str(e)}", file=sys.stderr)
-        return None
+        return f"Request failed: {str(e)}"
+
+# @mcp.tool()
+# def take_webcam_screenshot() -> Optional[str]:
+#     """
+#     Take a screenshot from the webcam and return it as a base64 encoded string.
+   
+#     Args:
+#         device_id: The camera device ID (default is 0 for the primary webcam)
+   
+#     Returns:
+#         Base64 encoded string of the image or None if capture fails
+#     """
+#     try:
+#         # Initialize the webcam
+#         cap = cv2.VideoCapture(0)
+       
+#         if not cap.isOpened():
+#             return None
+           
+#         # Capture a single frame
+#         ret, frame = cap.read()
+       
+#         # Release the webcam
+#         cap.release()
+       
+#         if not ret:
+#             return None
+           
+#         # Convert the image to JPEG format
+#         _, buffer = cv2.imencode('.jpg', frame)
+       
+#         # Convert to base64 string
+#         image_base64 = base64.b64encode(buffer).decode('utf-8')
+       
+#         return image_base64
+       
+    # except Exception as e:
+    #     print(f"Error capturing image: {str(e)}", file=sys.stderr)
+    #     return None
 
 @mcp.tool()
 async def run_azure_cli_command(command: str) -> str:
