@@ -1,0 +1,3 @@
+[submodule "bleak-dash"]
+	path = bleak-dash
+	url = https://github.com/mewmix/bleak-dash

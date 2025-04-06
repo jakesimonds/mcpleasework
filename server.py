@@ -6,8 +6,13 @@ import base64
 from rich import print
 import requests
 from mcp.server.fastmcp import FastMCP
+import asyncio
+from dash.robot import DashRobot, discover_and_connect
 
 mcp = FastMCP("My App")
+
+# Global robot instance for persistent connection
+dash_robot = None
 
 @mcp.resource("config://app")
 def get_config() -> str:
@@ -27,6 +32,65 @@ async def add_list_of_numbers(numbers: list[int]) -> int:
 def count_letter_in_text(text: str, letter: str) -> int:
     """Count occurrences of a letter in a text"""
     return text.count(letter)
+
+@mcp.tool()
+async def connect_to_dash() -> str:
+    """Connect to the Dash robot if not already connected"""
+    global dash_robot
+    
+    try:
+        robot = await discover_and_connect()
+        if not robot:
+            return "No compatible robot found."
+
+        if isinstance(robot, DashRobot):
+            dash_robot = robot
+            
+            await dash_robot.drive(150)
+
+            return "connected!"
+        
+
+    except Exception as e:
+        return f"Error connecting to Dash robot: {str(e)}"
+
+@mcp.tool()
+async def move_dash_forward(distance: int = 100) -> str:
+    """
+    Move Dash robot forward at the specified speed
+    
+    Args:
+        distance: Speed value (0-255), positive for forward movement
+    """
+    global dash_robot
+    
+    try:
+        if not dash_robot:
+            return "Dash robot is not connected. Use connect_to_dash() first."
+        
+        await dash_robot.drive(distance)
+        await asyncio.sleep(2)  # Wait for movement to complete
+        return f"Dash moved forward at speed {distance}"
+    except Exception as e:
+        print(f"[bold red]Error moving Dash: {str(e)}[/bold red]")
+        return f"Error moving Dash: {str(e)}"
+
+@mcp.tool()
+async def disconnect_dash() -> str:
+    """Disconnect from the Dash robot and clean up"""
+    global dash_robot
+    
+    try:
+        if not dash_robot:
+            return "No Dash robot is currently connected."
+        
+        await dash_robot.reset(4)  # Soft reset as a gentle cleanup
+        await dash_robot.disconnect()
+        dash_robot = None
+        return "Disconnected gracefully from Dash robot."
+    except Exception as e:
+        print(f"[bold red]Error disconnecting from Dash: {str(e)}[/bold red]")
+        return f"Error disconnecting from Dash: {str(e)}"
 
 @mcp.tool()
 def test(text: str) -> str:
