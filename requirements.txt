@@ -14,7 +14,7 @@ mdurl==0.1.2
 numpy==2.2.4
 opencv-python==4.11.0.86
 pip==24.3.1
-pydantic==2.10.6
+pydantic==2.11.3
 pydantic-core==2.27.2
 pydantic-settings==2.8.1
 pygments==2.19.1
