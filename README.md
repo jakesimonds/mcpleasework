@@ -47,3 +47,5 @@ To install this MCP plugin in Claude:
     }
   }
 }
+
+
