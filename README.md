@@ -39,7 +39,7 @@ To install this MCP plugin in Claude:
       "args": [
         "run",
         "--with",
-        "mcp[cli],requests,/Users/jakesimonds/Documents/mcp-python-demo/bleak-dash",
+        "mcp[cli],requests,opencv-python,pillow,/Users/jakesimonds/Documents/mcp-python-demo/bleak-dash",
         "mcp",
         "run",
         "/Users/jakesimonds/Documents/mcp-python-demo/server.py"
@@ -47,4 +47,3 @@ To install this MCP plugin in Claude:
     }
   }
 }
-
