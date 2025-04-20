@@ -111,28 +111,6 @@ async def dash_stop() -> str:
         print(f"[bold red]Error stopping Dash: {str(e)}[/bold red]")
         return f"Error stopping Dash: {str(e)}"
 
-@mcp.tool()
-async def dash_spin(speed: int = 200) -> str:
-    """
-    Make Dash robot spin left or right
-    
-    Args:
-        speed: Speed value (-2048 to 2048), positive for clockwise, negative for counter-clockwise
-    """
-    global dash_robot
-    
-    try:
-        if not dash_robot:
-            return "Dash robot is not connected. Use connect_to_dash() first."
-        
-        await dash_robot.spin(speed)
-        return f"Dash spinning at speed {speed}"
-    except Exception as e:
-        print(f"[bold red]Error spinning Dash: {str(e)}[/bold red]")
-        return f"Error spinning Dash: {str(e)}"
-
-
-
 
 
 
@@ -190,6 +168,33 @@ async def dash_turn_right():
     
     return f"Dash turned 90 degrees right"
 
+
+@mcp.tool()
+#async def dash_turn(degrees, speed_dps=360/2.094):
+async def dash_turn_around():
+    """
+    Turns the robot 180 degrees. Ignore degrees and speed_dps its a calibration thing. 
+    """
+    global dash_robot
+
+    # Convert string parameters to numeric values
+    degrees = 185.0
+    speed_dps = 360/5.0
+
+    if not dash_robot:
+        return "Dash robot is not connected. Use connect_to_dash() first."
+
+
+    
+    # Assuming positive degrees for clockwise, negative for counter-clockwise
+    speed = 200 if degrees > 0 else -200
+    # Calculate duration based on speed and degrees to turn
+    duration = abs(degrees / speed_dps)
+    await dash_robot.spin(speed)
+    await asyncio.sleep(duration)
+    await dash_robot.stop()
+    
+    return f"Dash turned 180 degrees"
 
 @mcp.tool()
 async def dash_say(sound_name: str) -> str:
