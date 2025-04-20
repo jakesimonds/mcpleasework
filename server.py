@@ -134,26 +134,25 @@ async def dash_spin(speed: int = 200) -> str:
 
 
 
+
+
+
 @mcp.tool()
 #async def dash_turn(degrees, speed_dps=360/2.094):
-async def dash_turn(degrees, speed_dps=360/5.0):
+async def dash_turn_left():
     """
-    Turns the robot a specific number of degrees at a certain speed.
-    This method simplifies the operation to a 'spin' command for a calculated duration.
-    Adjust this method based on your robot's capabilities.
+    Turns the robot 90 degrees right. Ignore degrees and speed_dps its a calibration thing. 
     """
     global dash_robot
 
     # Convert string parameters to numeric values
-    degrees = float(degrees)
-    speed_dps = float(speed_dps)
+    degrees = 123.0
+    speed_dps = 360/5.0
 
     if not dash_robot:
         return "Dash robot is not connected. Use connect_to_dash() first."
 
-    if abs(degrees) > 360:
-        print("Cannot turn more than one rotation per move")
-        return
+
     
     # Assuming positive degrees for clockwise, negative for counter-clockwise
     speed = 200 if degrees > 0 else -200
@@ -163,8 +162,33 @@ async def dash_turn(degrees, speed_dps=360/5.0):
     await asyncio.sleep(duration)
     await dash_robot.stop()
     
-    return f"Dash turned {degrees} degrees"
+    return f"Dash turned 90 degrees left"
 
+@mcp.tool()
+#async def dash_turn(degrees, speed_dps=360/2.094):
+async def dash_turn_right():
+    """
+    Turns the robot 90 degrees right (by going left all the way, its a hardware issue).
+    """
+    global dash_robot
+
+    # Convert string parameters to numeric values
+    degrees = 270.0
+    speed_dps = 360/5.0
+
+    if not dash_robot:
+        return "Dash robot is not connected. Use connect_to_dash() first."
+
+    
+    # Assuming positive degrees for clockwise, negative for counter-clockwise
+    speed = 200 if degrees > 0 else -200
+    # Calculate duration based on speed and degrees to turn
+    duration = abs(degrees / speed_dps)
+    await dash_robot.spin(speed)
+    await asyncio.sleep(duration)
+    await dash_robot.stop()
+    
+    return f"Dash turned 90 degrees right"
 
 
 @mcp.tool()
