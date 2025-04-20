@@ -32,6 +32,26 @@ def get_image() -> list[Image]:
     # success
     return img1
 
+@mcp.tool()
+def take_photo() -> Image:
+    """
+    Calls the photo server running on localhost to take a photo and returns the image.
+    """
+    try:
+        # Try to connect to the photo server
+        response = requests.get("http://localhost:5001/photo", timeout=5)
+        
+        # Check if the request was successful
+        if response.status_code == 200:
+            # Just return the image from the known path
+            return Image(path="/Users/jakesimonds/Documents/mcp-python-demo/photo/latest_photo.jpg")
+        else:
+            return f"Error: Photo server returned status code {response.status_code}"
+    
+    except requests.exceptions.ConnectionError:
+        return "Error: PhotoServer not running. Please start the server first."
+    except Exception as e:
+        return f"Error taking photo: {str(e)}"
 
 @mcp.tool()
 async def connect_to_dash() -> str:

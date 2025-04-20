@@ -1,3 +1,9 @@
+# PHOTO SERVER: 
+uvicorn app:app --reload --port=5001
+
+
+
+
 # MCP Python Demo
 
 This repository demonstrates the use of Model Context Protocol (MCP) SDK for Python.
