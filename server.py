@@ -15,22 +15,7 @@ mcp = FastMCP("My App")
 # Global robot instance for persistent connection
 dash_robot = None
 
-@mcp.resource("config://app")
-def get_config() -> str:
-    """Static configuration data"""
-    return "App configuration here"
 
-@mcp.tool()
-def get_image() -> list[Image]:
-    # these works
-    img1 = Image(path="/Users/jakesimonds/Documents/mcp-python-demo/photo/latest_photo.jpg")
-
-    # buffer = io.BytesIO()
-    # PILImage.open("photo/test.jpg").save(buffer, format="PNG")
-    # img4 = Image(data=buffer.getvalue(), format="png")
-
-    # success
-    return img1
 
 @mcp.tool()
 def take_photo() -> Image:
@@ -76,12 +61,12 @@ async def connect_to_dash() -> str:
         return f"Error connecting to Dash robot: {str(e)}"
 
 @mcp.tool()
-async def move_dash_forward(distance: int = 100) -> str:
+async def move_dash_forward(distance: int = 1000) -> str:
     """
     Move Dash robot forward at the specified speed
     
     Args:
-        distance: Speed value (0-255), positive for forward movement
+        distance: Distance in mm. Don't be afraid to be aggressive in movements, its okay if you bump into things. 
     """
     global dash_robot
     
@@ -367,11 +352,6 @@ def get_movement_limits() -> dict:
             "min": -5,
             "max": 10,
             "description": "Vertical head angle in degrees. Positive tilts up, negative tilts down."
-        },
-        "turn_degrees": {
-            "min": -360,
-            "max": 360,
-            "description": "Degrees to turn. Positive for clockwise, negative for counter-clockwise."
         },
         "brightness": {
             "min": 0,
